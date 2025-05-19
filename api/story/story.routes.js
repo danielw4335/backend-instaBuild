@@ -12,9 +12,9 @@ const router = express.Router()
 
 router.get('/', log, getStories)
 router.get('/:id', log, getStoryById)
+router.delete('/:id', requireAuth, removeStory)
 router.post('/', log, requireAuth, addStory)
 router.put('/:id', requireAuth, updateStory)
-router.delete('/:id', requireAuth, removeStory)
 // router.delete('/:id', requireAuth, requireAdmin, removeStory)
 
 router.post('/:id/msg', requireAuth, addStoryMsg)

@@ -20,6 +20,7 @@ export async function login(req, res) {
 export async function signup(req, res) {
 	try {
 		const credentials = req.body
+		console.log(' signup credentials:', credentials)
 
 		// Never log passwords
 		// logger.debug(credentials)

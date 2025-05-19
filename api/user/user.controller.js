@@ -16,13 +16,23 @@ export async function getUsers(req, res) {
     try {
         const filterBy = {
             txt: req.query?.txt || '',
-            minBalance: +req.query?.minBalance || 0
         }
         const users = await userService.query(filterBy)
         res.send(users)
     } catch (err) {
         logger.error('Failed to get users', err)
         res.status(400).send({ err: 'Failed to get users' })
+    }
+}
+
+export async function addUser(req, res) {
+    try {
+        const user = req.body
+        const savedUser = await userService.add(user)
+        delete savedUser.password
+        res.status(201).json(savedUser)
+    } catch (err) {
+        res.status(500).send({ err: 'Failed to add user' })
     }
 }
 

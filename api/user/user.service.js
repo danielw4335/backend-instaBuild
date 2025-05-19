@@ -81,11 +81,17 @@ async function remove(userId) {
 
 async function update(user) {
     try {
-        // peek only updatable properties
         const userToSave = {
-            _id: ObjectId.createFromHexString(user._id), // needed for the returnd obj
+            _id: ObjectId.createFromHexString(user._id),
             fullname: user.fullname,
-            score: user.score,
+            bio: user.bio,
+            imgUrl: user.imgUrl,
+            likedStoryIds: user.likedStoryIds || [],
+            savedStoryIds: user.savedStoryIds || [],
+            following: user.following || [],
+            followers: user.followers || [],
+            posts: user.posts || [],
+            comments: user.comments || [],
         }
         const collection = await dbService.getCollection('user')
         await collection.updateOne({ _id: userToSave._id }, { $set: userToSave })
@@ -97,40 +103,38 @@ async function update(user) {
 }
 
 async function add(user) {
-	try {
-		// peek only updatable fields!
-		const userToAdd = {
-			username: user.username,
-			password: user.password,
-			fullname: user.fullname,
-			imgUrl: user.imgUrl,
-			isAdmin: user.isAdmin,
-			score: 100,
-		}
-		const collection = await dbService.getCollection('user')
-		await collection.insertOne(userToAdd)
-		return userToAdd
-	} catch (err) {
-		logger.error('cannot add user', err)
-		throw err
-	}
+    try {
+        const userToAdd = {
+            username: user.username,
+            password: user.password, 
+            fullname: user.fullname,
+            bio: user.bio || '',
+            imgUrl: user.imgUrl || '',
+            likedStoryIds: user.likedStoryIds || [],
+            savedStoryIds: user.savedStoryIds || [],
+            following: user.following || [],
+            followers: user.followers || [],
+            posts: user.posts || [],
+            comments: user.comments || [],
+        }
+        const collection = await dbService.getCollection('user')
+        await collection.insertOne(userToAdd)
+        return userToAdd
+    } catch (err) {
+        logger.error('cannot add user', err)
+        throw err
+    }
 }
+
 
 function _buildCriteria(filterBy) {
 	const criteria = {}
-	if (filterBy.txt) {
-		const txtCriteria = { $regex: filterBy.txt, $options: 'i' }
-		criteria.$or = [
-			{
-				username: txtCriteria,
-			},
-			{
-				fullname: txtCriteria,
-			},
-		]
-	}
-	if (filterBy.minBalance) {
-		criteria.score = { $gte: filterBy.minBalance }
-	}
+ if (filterBy.txt) {
+        const txtCriteria = { $regex: filterBy.txt, $options: 'i' }
+        criteria.$or = [
+            { username: txtCriteria },
+            { fullname: txtCriteria },
+        ]
+    }
 	return criteria
 }

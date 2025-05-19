@@ -31,12 +31,9 @@ export async function getStoryById(req, res) {
 
 export async function addStory(req, res) {
 	const { loggedinUser, body } = req
-	const story = {
-		vendor: body.vendor,
-		speed: body.speed
-	}
+	const story = body
+	console.log(' addStory story:', story)
 	try {
-		story.owner = loggedinUser
 		const addedStory = await storyService.add(story)
 		res.json(addedStory)
 	} catch (err) {
@@ -49,7 +46,7 @@ export async function updateStory(req, res) {
 	const { loggedinUser, body: story } = req
     const { _id: userId, isAdmin } = loggedinUser
 
-    if(!isAdmin && story.owner._id !== userId) {
+    if(!isAdmin && story.by._id !== userId) {
         res.status(403).send('Not your story...')
         return
     }
