@@ -10,7 +10,9 @@ export async function getStories(req, res) {
             // sortDir: req.query.sortDir || 1,
 			// pageIdx: req.query.pageIdx,
 		}
+		console.log(' getStories filterBy:', filterBy)
 		const stories = await storyService.query(filterBy)
+		console.log(' getStories stories:', stories)
 		res.json(stories)
 	} catch (err) {
 		logger.error('Failed to get stories', err)

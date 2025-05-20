@@ -17,19 +17,21 @@ export const storyService = {
 	removeStoryMsg,
 }
 
-async function query(filterBy = { txt: '' }) {
+async function query(filterBy = { txt: '', userId: '' }) {
 	try {
 		const criteria = _buildCriteria(filterBy)
-		const sort = _buildSort(filterBy)
+		// const sort = _buildSort(filterBy)
 
 		const collection = await dbService.getCollection('story')
-		var storyCursor = await collection.find(criteria, { sort })
+		var storyCursor = await collection.find(criteria)
+		console.log(' query storyCursor:', storyCursor)
 
-		if (filterBy.pageIdx !== undefined) {
-			storyCursor.skip(filterBy.pageIdx * PAGE_SIZE).limit(PAGE_SIZE)
-		}
+		// if (filterBy.pageIdx !== undefined) {
+		// 	storyCursor.skip(filterBy.pageIdx * PAGE_SIZE).limit(PAGE_SIZE)
+		// }
 
 		const stories = storyCursor.toArray()
+		console.log(' query stories:', stories)
 		return stories
 	} catch (err) {
 		logger.error('cannot find stories', err)
@@ -132,8 +134,7 @@ async function removeStoryMsg(storyId, msgId) {
 
 function _buildCriteria(filterBy) {
 	const criteria = {
-		vendor: { $regex: filterBy.txt, $options: 'i' },
-		speed: { $gte: filterBy.minSpeed },
+		txt: { $regex: filterBy.txt, $options: 'i' },
 	}
 
 	return criteria
