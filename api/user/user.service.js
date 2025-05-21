@@ -38,7 +38,7 @@ async function getById(userId) {
         const collection = await dbService.getCollection('user')
         const user = await collection.findOne(criteria)
         delete user.password
-        console.log(user)
+        // console.log(user)
 
         criteria = { byUserId: userId }
 

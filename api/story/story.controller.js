@@ -1,3 +1,4 @@
+import { log } from '../../middlewares/logger.middleware.js'
 import { logger } from '../../services/logger.service.js'
 import { storyService } from './story.service.js'
 
@@ -10,9 +11,9 @@ export async function getStories(req, res) {
             // sortDir: req.query.sortDir || 1,
 			// pageIdx: req.query.pageIdx,
 		}
-		console.log(' getStories filterBy:', filterBy)
+		// console.log(' getStories filterBy:', filterBy)
 		const stories = await storyService.query(filterBy)
-		console.log(' getStories stories:', stories)
+		// console.log(' getStories stories:', stories)
 		res.json(stories)
 	} catch (err) {
 		logger.error('Failed to get stories', err)
@@ -34,7 +35,7 @@ export async function getStoryById(req, res) {
 export async function addStory(req, res) {
 	const { loggedinUser, body } = req
 	const story = body
-	console.log(' addStory story:', story)
+	// console.log(' addStory story:', story)
 	try {
 		const addedStory = await storyService.add(story)
 		res.json(addedStory)
@@ -45,13 +46,15 @@ export async function addStory(req, res) {
 }
 
 export async function updateStory(req, res) {
-	const { loggedinUser, body: story } = req
-    const { _id: userId, isAdmin } = loggedinUser
+	const { body: story } = req
+	// console.log(' updateStory story:')
+// logger.info('updateStory story:', story)
+    // const { _id: userId, isAdmin } = loggedinUser
 
-    if(!isAdmin && story.by._id !== userId) {
-        res.status(403).send('Not your story...')
-        return
-    }
+    // if(!isAdmin && story.by._id !== userId) {
+    //     res.status(403).send('Not your story...')
+    //     return
+    // }
 
 	try {
 		const updatedStory = await storyService.update(story)

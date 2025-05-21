@@ -2,7 +2,7 @@ import { storyService } from './services/story.service.js'
 import { userService } from './services/user.service.js'
 import { prettyJSON } from './services/util.service.js'
 
-console.log('Simple driver to test some API calls')
+// console.log('Simple driver to test some API calls')
 
 window.onLoadStorys = onLoadStorys
 window.onLoadUsers = onLoadUsers
@@ -50,7 +50,7 @@ async function onAddStoryMsg() {
 }
 
 function render(title, mix = '') {
-    console.log(title, mix)
+    // console.log(title, mix)
     const output = prettyJSON(mix)
     document.querySelector('h2').innerText = title
     document.querySelector('pre').innerHTML = output

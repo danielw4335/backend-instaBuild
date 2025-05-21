@@ -21,7 +21,7 @@ function doLog(level, ...args) {
     if(userId) strs.push(userId)
 
 	const line = `${_getTime()} - ${level} - ${strs.join(' | ')}\n`
-	console.log(line)
+	// console.log(line)
 
 	fs.appendFile(`${logsDir}/backend.log`, line, err => {
 		if (err) console.log('FATAL: cannot write to log file')

@@ -20,18 +20,11 @@ export const storyService = {
 async function query(filterBy = { txt: '', userId: '' }) {
 	try {
 		const criteria = _buildCriteria(filterBy)
-		// const sort = _buildSort(filterBy)
-
 		const collection = await dbService.getCollection('story')
-		var storyCursor = await collection.find(criteria)
-		console.log(' query storyCursor:', storyCursor)
 
-		// if (filterBy.pageIdx !== undefined) {
-		// 	storyCursor.skip(filterBy.pageIdx * PAGE_SIZE).limit(PAGE_SIZE)
-		// }
+		const storyCursor = collection.find(criteria).sort({ createdAt: -1 })
 
-		const stories = storyCursor.toArray()
-		console.log(' query stories:', stories)
+		const stories = await storyCursor.toArray()
 		return stories
 	} catch (err) {
 		logger.error('cannot find stories', err)
@@ -88,7 +81,7 @@ async function add(story) {
 }
 
 async function update(story) {
-	const storyToSave = { vendor: story.vendor, speed: story.speed }
+	const storyToSave = { story }
 
 	try {
 		const criteria = { _id: ObjectId.createFromHexString(story._id) }
