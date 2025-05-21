@@ -1,6 +1,6 @@
 import {dbService} from '../../services/db.service.js'
 import {logger} from '../../services/logger.service.js'
-import {reviewService} from '../review/review.service.js'
+import {chatService} from '../chat/chat.service.js'
 import { ObjectId } from 'mongodb'
 
 export const userService = {
@@ -42,11 +42,11 @@ async function getById(userId) {
 
         criteria = { byUserId: userId }
 
-        user.givenReviews = await reviewService.query(criteria)
+        user.givenChats = await chatService.query(criteria)
         
-        user.givenReviews = user.givenReviews.map(review => {
-            delete review.byUser
-            return review
+        user.givenChats = user.givenChats.map(chat => {
+            delete chat.byUser
+            return chat
         })
         
         return user

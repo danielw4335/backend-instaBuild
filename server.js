@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser'
 
 import { authRoutes } from './api/auth/auth.routes.js'
 import { userRoutes } from './api/user/user.routes.js'
-import { reviewRoutes } from './api/review/review.routes.js'
+import { chatRoutes } from './api/chat/chat.routes.js'
 import { storyRoutes } from './api/story/story.routes.js'
 import { setupSocketAPI } from './services/socket.service.js'
 
@@ -37,7 +37,7 @@ app.all('*all', setupAsyncLocalStorage)
 
 app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
-app.use('/api/review', reviewRoutes)
+app.use('/api/chat', chatRoutes)
 app.use('/api/story', storyRoutes)
 
 setupSocketAPI(server)
