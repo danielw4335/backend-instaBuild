@@ -10,7 +10,11 @@ async function query(filterBy = {}) {
     try {
         const criteria = _buildCriteria(filterBy)
         const collection = await dbService.getCollection('chat')
-        const chats = await collection.find(criteria).toArray()
+        const chats = await collection
+            .find(criteria)
+            .sort({ createdAt: -1 }) 
+            .toArray()
+
         return chats
     } catch (err) {
         logger.error('cannot get chats', err)
@@ -18,16 +22,16 @@ async function query(filterBy = {}) {
     }
 }
 
-
-
 async function createChat({ userIds }) {
     const chatToAdd = {
         users: userIds.map(id => ObjectId.createFromHexString(id)),
         msgs: [],
-        createdAt: Date.now()
+        createdAt: new Date()
     }
+
     const collection = await dbService.getCollection('chat')
     const res = await collection.insertOne(chatToAdd)
+
     chatToAdd._id = res.insertedId
     return chatToAdd
 }

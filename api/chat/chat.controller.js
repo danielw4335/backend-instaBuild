@@ -16,7 +16,7 @@ export async function getChats(req, res) {
 
 export async function createChat(req, res) {
     const { userIds = [] } = req.body
-    const { loggedinUser } = req 
+    const { loggedinUser } = req
     try {
         const allUserIds = Array.from(new Set([...userIds, loggedinUser._id]))
         if (allUserIds.length !== 2) {
@@ -37,7 +37,7 @@ export async function deleteChat(req, res) {
     try {
         const deletedCount = await chatService.remove(chatId, loggedinUser)
         if (deletedCount === 1) {
-            // socketService.broadcast({ type: 'chat-removed', data: chatId, userId: loggedinUser._id })
+            socketService.broadcast({ type: 'chat-removed', data: chatId, userId: loggedinUser._id })
             res.send({ msg: 'Deleted successfully' })
         } else {
             res.status(400).send({ err: 'Cannot remove chat' })
@@ -50,10 +50,11 @@ export async function deleteChat(req, res) {
 
 export async function addMsg(req, res) {
     const { msg } = req.body
+    const { loggedinUser } = req
     const { id: chatId } = req.params
     try {
         const updatedChat = await chatService.addMsg({ chatId, msg })
-        // socketService.broadcast({ type: 'msg-added', data: updatedChat, userId: loggedinUser._id })
+        socketService.broadcast({ type: 'chat-add-msg', data: updatedChat, userId: loggedinUser._id })
         res.send(updatedChat)
     } catch (err) {
         logger.error('Failed to add msg', err)
