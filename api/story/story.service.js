@@ -47,26 +47,30 @@ async function getById(storyId) {
 	}
 }
 
+
 async function remove(storyId) {
-	const { loggedinUser } = asyncLocalStorage.getStore()
-	const { _id: ownerId, isAdmin } = loggedinUser
+    const { loggedinUser } = asyncLocalStorage.getStore()
+    if (!loggedinUser) throw 'Unauthorized'
 
-	try {
-		const criteria = {
-			_id: ObjectId.createFromHexString(storyId),
-		}
-		if (!isAdmin) criteria['owner._id'] = ownerId
+    const userId = loggedinUser._id
 
-		const collection = await dbService.getCollection('story')
-		const res = await collection.deleteOne(criteria)
+    try {
+        const criteria = { 
+            _id:  ObjectId.createFromHexString(storyId),
+            'by._id': userId
+        }
 
-		if (res.deletedCount === 0) throw ('Not your story')
-		return storyId
-	} catch (err) {
-		logger.error(`cannot remove story ${storyId}`, err)
-		throw err
-	}
+        const collection = await dbService.getCollection('story')
+        const res = await collection.deleteOne(criteria)
+
+        if (res.deletedCount === 0) throw 'Not your story or not found'
+        return storyId
+    } catch (err) {
+        logger.error(`cannot remove story ${storyId}`, err)
+        throw err
+    }
 }
+
 
 async function add(story) {
 	try {
